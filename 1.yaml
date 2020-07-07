@@ -1,0 +1,42 @@
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 key pair for SSH access to the EC2 instance.
+    Type: AWS::EC2::KeyPair::KeyName
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 0.0.0.0/0
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  MyVPC:
+    Description: VPC to operate in
+    Type: AWS::EC2::VPC::Id
+  MySubnetIDs:
+    Description: Subnet IDs that is a List of Subnet Id
+    Type: "List<AWS::EC2::Subnet::Id>"
+    #
+
+#Resource
+Resources:
+  EC2:
+    Type: AWS::EC2::Instance
+    Properties:
+     Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-09d95fab7fff3776c
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref SecurityGroup
+#
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Enable SSH access"
+      SecurityGroupIngress:
+      - CidrIp: !Ref SSHLocation
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
